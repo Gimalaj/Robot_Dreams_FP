@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wp-cert
+  namespace: final-project
+spec:
+  secretName: tls-secret
+  issuerRef:
+    name: wp-issuer
+    kind: ClusterIssuer
+  commonName: wp.andriian
+  dnsNames:
+    - wp.andriian
+  duration: 8760h
+  renewBefore: 360h

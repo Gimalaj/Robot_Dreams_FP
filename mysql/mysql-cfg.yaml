@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init-script
+  namespace: final-project
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS wordpress;

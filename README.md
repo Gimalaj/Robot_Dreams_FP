@@ -101,8 +101,8 @@ microk8s.kubectl get all -n final-project
 
 ### Вивід ресурсів:
 
-<details>
-<summary>Поточний стан кластеру</summary>
+
+### Поточний стан кластеру
 
 ```bash
 NAME                             READY   STATUS    RESTARTS   AGE
@@ -131,7 +131,7 @@ microk8s.kubectl get hpa -n final-project
 NAME            REFERENCE              TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
 wordpress-hpa   Deployment/wordpress   cpu: 0%/50%   2         4         2          44h
 ```
-</details>
+
 
 ## Навантаження на кластер (Siege)
 
@@ -139,8 +139,7 @@ wordpress-hpa   Deployment/wordpress   cpu: 0%/50%   2         4         2      
 siege -c 20 -t 30s https://wp.andriian
 ```
 
-<details>
-<summary>Стан після навантаження</summary>
+### Стан після навантаження
 
 ```bash
 microk8s.kubectl get hpa -n final-project
@@ -157,7 +156,7 @@ wordpress-758cb84d7c-9wt82   1/1     Running   0          11s
 wordpress-758cb84d7c-gpnxc   1/1     Running   1          44h
 wordpress-758cb84d7c-wj8dr   1/1     Running   0          11s
 ```
-</details>
+
 
 ## Моніторинг (Prometheus, Grafana, Loki, Fluent Bit)
 
@@ -187,7 +186,7 @@ microk8s.kubectl apply -f node-exporter.yaml
 microk8s.kubectl get all -n monitoring
 ```
 
-<details>
+
 
 ```bash
 NAME                           READY   STATUS    RESTARTS   AGE
@@ -222,7 +221,7 @@ replicaset.apps/kube-state-metrics-669cccd79c   1         1         1       48m
 replicaset.apps/loki-54d84d4bbb                 1         1         1       48m
 replicaset.apps/prometheus-58cd678dfc           1         1         1       51m
 ```
-</details>
+
 
 ## Видалення простору імен
 

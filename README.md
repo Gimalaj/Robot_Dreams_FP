@@ -232,6 +232,24 @@ microk8s.kubectl delete namespace final-project
 ## Встановлення Helm-чарту WordPress
 
 ```bash
+helm create wp.andriian
+```
+
+## Створюємо темплейти, додаємо залежності і встановлюємо Helm charts
+
+## 📂 Helm-чарт `wp.andriian`
+
+- [Chart.yaml](wp.andriian/Chart.yaml)
+- [values.yaml](wp.andriian/values.yaml)
+
+### 📁 Шаблони (templates)
+- [deployment.yaml](wp.andriian/templates/deployment.yaml)
+- [hpa.yaml](wp.andriian/templates/hpa.yaml)
+- [ingress.yaml](wp.andriian/templates/ingress.yaml)
+- [pvc.yaml](wp.andriian/templates/pvc.yaml)
+- [service.yaml](wp.andriian/templates/service.yaml)
+
+```bash
 helm dependency update wp.andriian/
 sudo microk8s.kubectl config view --raw > ~/.kube/config
 helm install wp ./wp.andriian/ --kubeconfig ~/.kube/config -n wordpress --create-namespace

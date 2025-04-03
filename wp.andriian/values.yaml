@@ -1,0 +1,24 @@
+wordpress:
+  replicaCount: 1
+  image:
+    repository: wordpress
+    tag: latest
+  ingress:
+    enabled: true
+    hostname: wp.andriian
+    tls: true
+    tlsSecret: tls-secret
+  persistence:
+    enabled: true
+    size: 5Gi
+  hpa:
+    minReplicas: 1
+    maxReplicas: 4
+
+mysql:
+  auth:
+    rootPassword: qazSedcS123
+    database: wordpress
+  primary:
+    persistence:
+      size: 5G

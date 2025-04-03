@@ -264,6 +264,11 @@ STATUS: deployed
 REVISION: 1
 ```
 
+### Перевіряємо неймспейс
+```bash
+microk8s.kubectl get all -n monitoring
+```
+
 ```bash
 NAME                                READY   STATUS    RESTARTS   AGE
 pod/wp-mysql-0                      1/1     Running   0          4m22s

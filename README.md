@@ -239,7 +239,7 @@ helm create wp.andriian
 
 ## 📂 Helm-чарт `wp.andriian`
 
-- [Chart.yaml](wp.andriian/Chart.yaml)
+- [Chart.yaml](wp.andriian/Charts.yaml)
 - [values.yaml](wp.andriian/values.yaml)
 
 ### 📁 Шаблони (templates)

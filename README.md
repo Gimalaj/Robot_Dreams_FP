@@ -1,79 +1,110 @@
-tree 
+# Final Project Deployment Guide
+
+## Структура проєкту
+
+```bash
 .
 ├── cert-manager
-│			  ├── certificate.yaml
-│			  └── issuer.yaml
+│   ├── certificate.yaml
+│   └── issuer.yaml
 ├── monitoring
-│			  ├── fluent
-│			  │			    ├── fluent-bit-config.yaml
-│			  │			    └── fluent-bit-deamonset.yaml
-│			  ├── grafana
-│			  │			    ├── grafana-deployment.yaml
-│			  │			    ├── grafana-ingress.yaml
-│			  │			    └── grafana-service.yaml
-│			  ├── kube-state-metrics.yaml
-│			  ├── loki
-│			  │			    ├── loki-config.yaml
-│			  │			    ├── loki-deployment.yaml
-│			  │			    ├── loki-pv.yaml
-│			  │			    ├── loki-pvc.yaml
-│			  │			    └── loki-service.yaml
-│			  ├── namespace.yaml
-│			  ├── node-exporter.yaml
-│			  ├── prometheus-config.yaml
-│			  ├── prometheus-deployment.yaml
-│			  └── prometheus-service.yaml
+│   ├── fluent
+│   │   ├── fluent-bit-config.yaml
+│   │   └── fluent-bit-deamonset.yaml
+│   ├── grafana
+│   │   ├── grafana-deployment.yaml
+│   │   ├── grafana-ingress.yaml
+│   │   └── grafana-service.yaml
+│   ├── kube-state-metrics.yaml
+│   ├── loki
+│   │   ├── loki-config.yaml
+│   │   ├── loki-deployment.yaml
+│   │   ├── loki-pv.yaml
+│   │   ├── loki-pvc.yaml
+│   │   └── loki-service.yaml
+│   ├── namespace.yaml
+│   ├── node-exporter.yaml
+│   ├── prometheus-config.yaml
+│   ├── prometheus-deployment.yaml
+│   └── prometheus-service.yaml
 ├── mysql
-│			  ├── mysql-cfg.yaml
-│			  ├── mysql-deployment.yaml
-│			  ├── mysql-pvc.yaml
-│			  ├── mysql-secret-user.yaml
-│			  ├── mysql-secret.yaml
-│			  └── mysql-service.yaml
+│   ├── mysql-cfg.yaml
+│   ├── mysql-deployment.yaml
+│   ├── mysql-pvc.yaml
+│   ├── mysql-secret-user.yaml
+│   ├── mysql-secret.yaml
+│   └── mysql-service.yaml
 ├── namespace.yaml
 ├── wordpress
-│			  ├── wp-deployment.yaml
-│			  ├── wp-hpa.yaml
-│			  ├── wp-ingress.yaml
-│			  ├── wp-pvc.yaml
-│			  └── wp-service.yaml
+│   ├── wp-deployment.yaml
+│   ├── wp-hpa.yaml
+│   ├── wp-ingress.yaml
+│   ├── wp-pvc.yaml
+│   └── wp-service.yaml
 └── wp.andriian
     ├── Chart.yaml
     ├── charts
     ├── templates
-    │			  ├── deployment.yaml
-    │			  ├── hpa.yaml
-    │			  ├── ingress.yaml
-    │			  ├── pvc.yaml
-    │			  └── service.yaml
+    │   ├── deployment.yaml
+    │   ├── hpa.yaml
+    │   ├── ingress.yaml
+    │   ├── pvc.yaml
+    │   └── service.yaml
     └── values.yaml
+```
 
+## Створення проєкту
+
+```bash
 mkdir Final-Project
 cd Final-Project
+```
 
-microk8s.kubectl apply -f namespace.yaml 
+## Створення простору імен
 
+```bash
+microk8s.kubectl apply -f namespace.yaml
+```
+
+## Встановлення Cert-Manager
+
+```bash
 cd cert-manager/
-microk8s.kubectl apply -f issuer.yaml 
-microk8s.kubectl apply -f certificate.yaml 
+microk8s.kubectl apply -f issuer.yaml
+microk8s.kubectl apply -f certificate.yaml
 microk8s.kubectl get all -n final-project
+```
 
-cd mysql/
-microk8s.kubectl apply -f mysql-secret.yaml 
-microk8s.kubectl apply -f mysql-pvc.yaml 
-microk8s.kubectl apply -f mysql-cfg.yaml 
-microk8s.kubectl apply -f mysql-deployment.yaml 
+## Встановлення MySQL
+
+```bash
+cd ../mysql/
+microk8s.kubectl apply -f mysql-secret.yaml
+microk8s.kubectl apply -f mysql-pvc.yaml
+microk8s.kubectl apply -f mysql-cfg.yaml
+microk8s.kubectl apply -f mysql-deployment.yaml
 microk8s.kubectl get all -n final-project
-microk8s.kubectl apply -f mysql-service.yaml 
+microk8s.kubectl apply -f mysql-service.yaml
+```
 
-cd wordpress/
-microk8s.kubectl apply -f wp-pvc.yaml 
-microk8s.kubectl apply -f wp-deployment.yaml 
-microk8s.kubectl apply -f wp-service.yaml 
+## Встановлення WordPress
+
+```bash
+cd ../wordpress/
+microk8s.kubectl apply -f wp-pvc.yaml
+microk8s.kubectl apply -f wp-deployment.yaml
+microk8s.kubectl apply -f wp-service.yaml
 microk8s.kubectl apply -f wp-ingress.yaml
-microk8s.kubectl apply -f wp-hpa.yaml 
+microk8s.kubectl apply -f wp-hpa.yaml
 microk8s.kubectl get all -n final-project
+```
 
+### Вивід ресурсів:
+
+<details>
+<summary>Поточний стан кластеру</summary>
+
+```bash
 NAME                             READY   STATUS    RESTARTS   AGE
 pod/mysql-68bfcbfd95-bk4ts       1/1     Running   1          44h
 pod/wordpress-758cb84d7c-8flqq   1/1     Running   1          44h
@@ -93,26 +124,31 @@ replicaset.apps/wordpress-758cb84d7c   2         2         2       44h
 
 NAME                                                REFERENCE              TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
 horizontalpodautoscaler.autoscaling/wordpress-hpa   Deployment/wordpress   cpu: 0%/50%   2         4         2          44h
+```
 
-
-microk8s.kubectl get pods -n final-project
-NAME                         READY   STATUS    RESTARTS   AGE
-mysql-68bfcbfd95-bk4ts       1/1     Running   1          44h
-wordpress-758cb84d7c-8flqq   1/1     Running   1          44h
-wordpress-758cb84d7c-gpnxc   1/1     Running   1          44h
-
+```bash
 microk8s.kubectl get hpa -n final-project
 NAME            REFERENCE              TARGETS        MINPODS   MAXPODS   REPLICAS   AGE
 wordpress-hpa   Deployment/wordpress   cpu: 0%/50%   2         4         2          44h
+```
+</details>
 
+## Навантаження на кластер (Siege)
 
-siege -c 20 -t 30s https://wp.andriian # запущений siege ззовні з macOS
+```bash
+siege -c 20 -t 30s https://wp.andriian
+```
 
+<details>
+<summary>Стан після навантаження</summary>
 
+```bash
 microk8s.kubectl get hpa -n final-project
 NAME            REFERENCE              TARGETS         MINPODS   MAXPODS   REPLICAS   AGE
 wordpress-hpa   Deployment/wordpress   cpu: 190%/50%   2         4         2          44h
+```
 
+```bash
 microk8s.kubectl get pods -n final-project
 NAME                         READY   STATUS    RESTARTS   AGE
 mysql-68bfcbfd95-bk4ts       1/1     Running   1          44h
@@ -120,14 +156,17 @@ wordpress-758cb84d7c-8flqq   1/1     Running   1          44h
 wordpress-758cb84d7c-9wt82   1/1     Running   0          11s
 wordpress-758cb84d7c-gpnxc   1/1     Running   1          44h
 wordpress-758cb84d7c-wj8dr   1/1     Running   0          11s
+```
+</details>
 
+## Моніторинг (Prometheus, Grafana, Loki, Fluent Bit)
 
-
-cd monitoring/
+```bash
+cd ../monitoring/
 microk8s.kubectl apply -f namespace.yaml
-microk8s.kubectl apply -f prometheus-config.yaml 
-microk8s.kubectl apply -f prometheus-deployment.yaml 
-microk8s.kubectl apply -f prometheus-service.yaml 
+microk8s.kubectl apply -f prometheus-config.yaml
+microk8s.kubectl apply -f prometheus-deployment.yaml
+microk8s.kubectl apply -f prometheus-service.yaml
 
 microk8s.kubectl apply -f loki/loki-config.yaml
 microk8s.kubectl apply -f loki/loki-pv.yaml
@@ -141,11 +180,17 @@ microk8s.kubectl apply -f fluent/fluent-bit-deamonset.yaml
 microk8s.kubectl apply -f grafana/grafana-deployment.yaml
 microk8s.kubectl apply -f grafana/grafana-service.yaml
 microk8s.kubectl apply -f grafana/grafana-ingress.yaml
-microk8s.kubectl apply -f monitoring/kube-state-metrics.yaml
-microk8s.kubectl apply -f kube-state-metrics.yaml
-microk8s.kubectl apply -f node-exporter.yaml 
-microk8s.kubectl get all -n monitoring
 
+microk8s.kubectl apply -f kube-state-metrics.yaml
+microk8s.kubectl apply -f node-exporter.yaml
+
+microk8s.kubectl get all -n monitoring
+```
+
+<details>
+
+```bash
+NAME                           READY   STATUS    RESTARTS   AGE
 NAME                                      READY   STATUS    RESTARTS   AGE
 pod/fluent-bit-447dh                      1/1     Running   0          48m
 pod/grafana-85b785d45d-kj549              1/1     Running   0          48m
@@ -176,31 +221,33 @@ replicaset.apps/grafana-85b785d45d              1         1         1       48m
 replicaset.apps/kube-state-metrics-669cccd79c   1         1         1       48m
 replicaset.apps/loki-54d84d4bbb                 1         1         1       48m
 replicaset.apps/prometheus-58cd678dfc           1         1         1       51m
+```
+</details>
 
+## Видалення простору імен
 
-
+```bash
 microk8s.kubectl delete namespace final-project
-namespace "final-project" deleted
+```
 
+## Встановлення Helm-чарту WordPress
 
-
+```bash
 helm dependency update wp.andriian/
-Getting updates for unmanaged Helm repositories...
-...Successfully got an update from the "https://charts.bitnami.com/bitnami" chart repository
-Saving 1 charts
-Downloading mysql from repo https://charts.bitnami.com/bitnami
-Deleting outdated charts
-
 sudo microk8s.kubectl config view --raw > ~/.kube/config
 helm install wp ./wp.andriian/ --kubeconfig ~/.kube/config -n wordpress --create-namespace
+```
+
+### Вивід:
+
+```bash
 NAME: wp
-LAST DEPLOYED: Thu Apr  3 14:20:58 2025
 NAMESPACE: wordpress
 STATUS: deployed
 REVISION: 1
-TEST SUITE: None
+```
 
-microk8s.kubectl get all -n wordpress
+```bash
 NAME                                READY   STATUS    RESTARTS   AGE
 pod/wp-mysql-0                      1/1     Running   0          4m22s
 pod/wp-wordpress-757f77db87-b2dtr   1/1     Running   0          4m22s
@@ -221,4 +268,21 @@ statefulset.apps/wp-mysql   1/1     4m23s
 
 NAME                                                   REFERENCE                 TARGETS       MINPODS   MAXPODS   REPLICAS   AGE
 horizontalpodautoscaler.autoscaling/wp-wordpress-hpa   Deployment/wp-wordpress   cpu: 0%/50%   1         4         1          4m24s
+```
 
+
+## 🖼️ Скріншоти
+
+### 📄 Certificate
+![Certificate](screenshots/certificate.png)
+
+### 📊 Графани Dashboard
+![Dashboard 1](screenshots/dashboard1.png)
+![Dashboard 2](screenshots/dashboard2.png)
+![Dashboard 3](screenshots/dashboard3.png)
+![Dashboard 4](screenshots/dashboard4.png)
+
+### 📝 WordPress
+![WordPress](screenshots/wordpress.png)
+
+---
